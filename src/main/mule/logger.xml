@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f3c039dc-0c7d-44ca-a34b-80ab4ed4e348" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="loggerFlow" doc:id="9a3718fe-30b8-44eb-9b08-e4a694ea32fa" >
+		<http:listener doc:name="Listener" doc:id="291fb77b-ff81-4ebe-a4f0-fefa99f2382f" config-ref="HTTP_Listener_config" path="/logger" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bec1abc9-c6ee-4d17-aec5-6d34a08377a4" message="postmanPayload#[payload]" category="information"/>
+		<ee:transform doc:name="Transform Message" doc:id="f149645d-0d8f-4ad9-8d34-4524f53fac23" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="357c126e-d99e-4b87-bca5-6405b8bd72cf" message="flowPayload: #[payload]"/>
+	</flow>
+</mule>
